@@ -26,7 +26,7 @@ void ProductionManager::DetermineProductionForIdleBuildings(Bot* bot) {
 	bool action_found_for_building = false;
 
 	for (int i = 0; i < idle_buildings_.size(); i++) {
-		std::cout << i << " < " << idle_buildings_.size() << std::endl;
+		action_found_for_building = false;
 		const Unit* building_idle = idle_buildings_[i];
 		switch (building_idle->unit_type.ToType())
 		{
@@ -41,15 +41,13 @@ void ProductionManager::DetermineProductionForIdleBuildings(Bot* bot) {
 		default:
 			//If unit isn't managed by this module, delete it from vector.
 			idle_buildings_.erase(idle_buildings_.begin() + i);
-			i = (i == 0 ? 0 : i - 1);
+			i--;
 			break;
 		}
 
 		if (action_found_for_building) {
-			std::cout << "HERE MIGHT PRODUCTION ERROR" << std::endl;
 			idle_buildings_.erase(idle_buildings_.begin() + i);
-			i = (i == 0 ? 0 : i - 1);
-			std::cout << "BUT LOOKS LIKE NONE OCCURED" << std::endl;
+			i--;
 		}
 	}
 }
@@ -82,13 +80,10 @@ bool ProductionManager::DetermineProductionForBarracks(Bot* bot, const Unit* bar
 bool ProductionManager::UnitCanBeConstructed(const ObservationInterface* observation, const int cost_of_unit, const int space_taken_by_unit) {
 	// TODO (team) :: this shit violate SRP.
 	int space_left = observation->GetFoodCap() - observation->GetFoodUsed();
-	std::cout << "space_left : " << space_left << std::endl;
 	if (observation->GetMinerals() < cost_of_unit) {
-		std::cout << "NOT ENOUGHT MINERALS : " << observation->GetMinerals() << std::endl;
 		return false;
 	}
 	if (space_left < space_taken_by_unit) {
-		std::cout << "NOT ENOUGHT SPACE : " << space_left << std::endl;
 		return false;
 	}
 	return true;

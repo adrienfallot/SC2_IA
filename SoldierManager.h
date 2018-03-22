@@ -17,7 +17,8 @@ class SoldierManager {
 private:
 	std::vector<const Unit*> idle_soldiers_;
 
-	int number_of_idle_marines = 0;
+	int number_of_idle_marines_ = 0;
+	int number_min_of_marines_to_attack_ = 20;
 
 	std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
 

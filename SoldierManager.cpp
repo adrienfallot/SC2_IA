@@ -11,10 +11,11 @@ SoldierManager::SoldierManager() {}
 
 void SoldierManager::OnUnitIdle(Bot* bot, const Unit* unit_idle)
 {
-	idle_soldiers_.push_back(unit_idle);
-
-	if (unit_idle->unit_type.ToType() == UNIT_TYPEID::TERRAN_MARINE) {
-		number_of_idle_marines++;
+	if (std::find(idle_soldiers_.begin(), idle_soldiers_.end(), unit_idle) == idle_soldiers_.end()) {
+		idle_soldiers_.push_back(unit_idle);
+		if (unit_idle->unit_type.ToType() == UNIT_TYPEID::TERRAN_MARINE) {
+			number_of_idle_marines_++;
+		}
 	}
 }
 
@@ -28,39 +29,41 @@ void SoldierManager::DetermineActionForIdleSoldiers(Bot* bot)
 {
 	bool action_found_for_soldier = false;
 
-	bool send_marines = (number_of_idle_marines >= 20);
-
+	bool enought_marines_for_attack = (number_of_idle_marines_ >= number_min_of_marines_to_attack_);
+	std::cout << enought_marines_for_attack << std::endl;
 	for (int i = 0; i < idle_soldiers_.size(); i++) {
-		//std::cout << i << " < " << idle_soldiers_.size() << std::endl;
+		action_found_for_soldier = false;
 		const Unit* soldier_idle = idle_soldiers_[i];
 		switch (soldier_idle->unit_type.ToType())
 		{
 		case UNIT_TYPEID::TERRAN_MARINE:
-			action_found_for_soldier = DetermineActionForMarine(bot, soldier_idle, send_marines);
+			std::cout << "ZOUP" << std::endl;
+			action_found_for_soldier = DetermineActionForMarine(bot, soldier_idle, enought_marines_for_attack);
 			break;
 		default:
 			//If unit isn't managed by this module, delete it from vector.
+			std::cout << "ZOP" << std::endl;
 			idle_soldiers_.erase(idle_soldiers_.begin() + i);
-			i = (i == 0 ? 0 : i - 1);
+			i--;
 			break;
 		}
 
 		if (action_found_for_soldier) {
-			std::cout << "HERE MIGHT UNIT ERROR" << std::endl;
 			idle_soldiers_.erase(idle_soldiers_.begin() + i);
-			i = (i == 0 ? 0 : i - 1);
-			std::cout << "BUT LOOKS LIKE NONE OCCURED" << std::endl;
+			i--;
+			std::cout << "BOUP" << std::endl;
 		}
 	}
 }
 
-bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool send_marines)
+bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack)
 {
-	if (send_marines)
+	if (enought_marines_for_attack)
 	{
 		const GameInfo& game_info = bot->Observation()->GetGameInfo();
 		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, game_info.enemy_start_locations.front());
-		number_of_idle_marines--;
+		number_of_idle_marines_--;
+		std::cout << "BIP" << std::endl;
 		return true;
 	}
 	return false;

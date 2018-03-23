@@ -14,6 +14,9 @@ using namespace sc2;
 class ProductionManager {
 
  private:
+	int current_infantery_armor_level = 0;
+	int current_infantery_weapon_level = 0;
+
 	std::vector<const Unit*> idle_buildings_;
 
 	void DetermineProductionForIdleBuildings(Bot* bot);
@@ -22,7 +25,9 @@ class ProductionManager {
 
 	bool DetermineProductionForBarracks(Bot* bot, const Unit* barracks_idle);
 
-	bool UnitCanBeConstructed(const ObservationInterface* observation, const int cost_of_unit, const int space_taken_by_unit);
+	bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
+
+	bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
 
  public:
 	ProductionManager();

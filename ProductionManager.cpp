@@ -38,6 +38,10 @@ void ProductionManager::DetermineProductionForIdleBuildings(Bot* bot) {
 			action_found_for_building = DetermineProductionForBarracks(bot, building_idle);
 			break;
 		}
+		case UNIT_TYPEID::TERRAN_ENGINEERINGBAY: {
+			action_found_for_building = DetermineProductionForEngineeringBay(bot, building_idle);
+			break;
+		}
 		default:
 			//If unit isn't managed by this module, delete it from vector.
 			idle_buildings_.erase(idle_buildings_.begin() + i);
@@ -57,7 +61,7 @@ bool ProductionManager::DetermineProductionForCommandCenter(Bot* bot, const Unit
 	const int COST_OF_SCV = 50;  // TODO(team) :: Find a correct architecture to store Unit_Infos.
 	const int SPACE_TAKEN_BY_SCV = 1;  // TODO(team) :: Find a correct architecture to store Unit_Infos.
 	const ObservationInterface* observation = bot->Observation();
-	if (command_center_idle->assigned_harvesters < command_center_idle->ideal_harvesters && UnitCanBeConstructed(observation, COST_OF_SCV, SPACE_TAKEN_BY_SCV)) {
+	if (command_center_idle->assigned_harvesters < command_center_idle->ideal_harvesters && UnitCanBeConstructed(observation, COST_OF_SCV, 0, SPACE_TAKEN_BY_SCV)) {
 		bot->Actions()->UnitCommand(command_center_idle, ABILITY_ID::TRAIN_SCV);
 		return true;
 	}
@@ -70,17 +74,79 @@ bool ProductionManager::DetermineProductionForBarracks(Bot* bot, const Unit* bar
 	const int COST_OF_MARINE = 50;
 	const int SPACE_TAKEN_BY_MARINE = 1;
 	const ObservationInterface* observation = bot->Observation();
-	if (UnitCanBeConstructed(observation, COST_OF_MARINE, SPACE_TAKEN_BY_MARINE)) {
+	if (UnitCanBeConstructed(observation, COST_OF_MARINE, 0, SPACE_TAKEN_BY_MARINE)) {
 		bot->Actions()->UnitCommand(barracks_idle, ABILITY_ID::TRAIN_MARINE);
 		return true;
 	}
 	return false;
 }
 
-bool ProductionManager::UnitCanBeConstructed(const ObservationInterface* observation, const int cost_of_unit, const int space_taken_by_unit) {
+bool ProductionManager::DetermineProductionForEngineeringBay(Bot* bot, const Unit* engineeringBay_idle) {
+	const int COST_OF_INFANTERY_WEAPON_1 = 100;
+	const int COST_OF_INFANTERY_WEAPON_2 = 175;
+	const int COST_OF_INFANTERY_WEAPON_3 = 250;
+	const int COST_OF_INFANTERY_ARMOR_1 = 100;
+	const int COST_OF_INFANTERY_ARMOR_2 = 175;
+	const int COST_OF_INFANTERY_ARMOR_3 = 250;
+	const ObservationInterface* observation = bot->Observation();
+
+	if (current_infantery_weapon_level >= 3 && current_infantery_armor_level >= 3) {
+		return true;
+	}
+
+	if (current_infantery_weapon_level <= current_infantery_armor_level) {
+		if (current_infantery_weapon_level < 1) {
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_WEAPON_1, COST_OF_INFANTERY_WEAPON_1, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONSLEVEL1);
+				current_infantery_weapon_level++;
+				return true;
+			}
+		}
+		else if (current_infantery_weapon_level < 2) {  // TODO :: Add dependency to armurerie
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_WEAPON_2, COST_OF_INFANTERY_WEAPON_2, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONSLEVEL2);
+				current_infantery_weapon_level++;
+				return true;
+			}
+		}
+		else if (current_infantery_weapon_level < 3) {
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_WEAPON_3, COST_OF_INFANTERY_WEAPON_3, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONSLEVEL3);
+				current_infantery_weapon_level++;
+				return true;
+			}
+		}
+	}
+	else {
+		if (current_infantery_armor_level < 1) {
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_ARMOR_1, COST_OF_INFANTERY_ARMOR_1, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYARMORLEVEL1);
+				current_infantery_armor_level++;
+				return true;
+			}
+		}
+		else if (current_infantery_armor_level < 2) {  // TODO :: Add dependency to armurerie
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_ARMOR_2, COST_OF_INFANTERY_ARMOR_2, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYARMORLEVEL2);
+				current_infantery_armor_level++;
+				return true;
+			}
+		}
+		else if (current_infantery_armor_level < 3) {
+			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_ARMOR_3, COST_OF_INFANTERY_ARMOR_3, 0)) {
+				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYARMORLEVEL3);
+				current_infantery_armor_level++;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool ProductionManager::UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit) {
 	// TODO (team) :: this shit violate SRP.
 	int space_left = observation->GetFoodCap() - observation->GetFoodUsed();
-	if (observation->GetMinerals() < cost_of_unit) {
+	if (observation->GetMinerals() < mineral_cost_of_unit || observation->GetVespene() < vespene_cost_of_unit) {
 		return false;
 	}
 	if (space_left < space_taken_by_unit) {

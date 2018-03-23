@@ -4,10 +4,12 @@
 #include "sc2utils/sc2_manage_process.h"
 #include "MapParser.h"
 
-MapParser::MapParser() {
-	;
-}
+namespace SonateEnCMineurPourLesBotsConquerant {
+	MapParser::MapParser() {
+		;
+	}
 
-std::vector<Point2D> MapParser::GetDefensePoint() {
-	return defense_point_;
+	std::vector<Point2D> MapParser::GetDefensePoint() {
+		return defense_point_;
+	}
 }

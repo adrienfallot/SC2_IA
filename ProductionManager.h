@@ -9,37 +9,40 @@
 #include "sc2utils/sc2_manage_process.h"
 class Bot;
 
-using namespace sc2;
+namespace SonateEnCMineurPourLesBotsConquerant {
 
-class ProductionManager {
+	using namespace sc2;
 
- private:
-	int current_infantery_armor_level = 0;
-	int current_infantery_weapon_level = 0;
+	class ProductionManager {
 
-	std::vector<const Unit*> idle_buildings_;
+	private:
+		int current_infantery_armor_level = 0;
+		int current_infantery_weapon_level = 0;
 
-	void DetermineProductionForIdleBuildings(Bot* bot);
+		std::vector<const Unit*> idle_buildings_;
 
-	bool DetermineProductionForCommandCenter(Bot* bot, const Unit* command_center_idle);
+		void DetermineProductionForIdleBuildings(Bot* bot);
 
-	bool DetermineProductionForBarracks(Bot* bot, const Unit* barracks_idle);
+		bool DetermineProductionForCommandCenter(Bot* bot, const Unit* command_center_idle);
 
-	bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
+		bool DetermineProductionForBarracks(Bot* bot, const Unit* barracks_idle);
 
-	bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
-	
-	bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
+		bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
 
-	bool GetIfHasATechLab(Bot *bot, const Unit* barrack_idle);
+		bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
 
- public:
-	ProductionManager();
+		bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
 
-	void Update(Bot* bot);
+		bool GetIfHasATechLab(Bot *bot, const Unit* barrack_idle);
 
-	void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+	public:
+		ProductionManager();
 
-};
+		void Update(Bot* bot);
+
+		void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+
+	};
+}
 
 #endif  //!PRODUCTION_MANAGER_H

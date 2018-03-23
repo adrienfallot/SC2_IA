@@ -10,49 +10,51 @@
 
 class Bot;
 
-using namespace sc2;
+namespace SonateEnCMineurPourLesBotsConquerant {
 
-class SoldierManager {
+	using namespace sc2;
 
-private:
-	std::vector<const Unit*> idle_soldiers_;
+	class SoldierManager {
 
-	int number_of_idle_marines_ = 0;
-	int number_of_sneeky_idle_marines_ = 0;
-	int number_min_of_marines_to_attack_ = 20;
-	int number_min_of_sneeky_marines_to_attack_ = 35;
+	private:
+		std::vector<const Unit*> idle_soldiers_;
 
-	std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
+		int number_of_idle_marines_ = 0;
+		int number_of_sneeky_idle_marines_ = 0;
+		int number_min_of_marines_to_attack_ = 20;
+		int number_min_of_sneeky_marines_to_attack_ = 35;
 
-	void DetermineActionForIdleSoldiers(Bot* bot);
+		std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
 
-	bool SoldierManager::DetermineActionForGhost(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
+		void DetermineActionForIdleSoldiers(Bot* bot);
 
-	bool DetermineActionForMarauder(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
+		bool SoldierManager::DetermineActionForGhost(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 
-	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
-	
-	bool DetermineActionForSCV(Bot* bot, const Unit* scv_idle);
+		bool DetermineActionForMarauder(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 
-	void GetIdleSneekySCVToHarvest(Bot* bot);
+		bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 
-	void GetNewSCVToWork(Bot* bot, const Unit* unit);
-	
-	const Unit* FindNearestMineralPatch(const Point2D& start, Bot *bot);
+		bool DetermineActionForSCV(Bot* bot, const Unit* scv_idle);
 
-	Point2D FindRandomLocationInArea(Point2D center, float radius);
+		void GetIdleSneekySCVToHarvest(Bot* bot);
 
-	Point2D GetRandomPositionInArea(Point2D center, float radius);
+		void GetNewSCVToWork(Bot* bot, const Unit* unit);
 
-public:
-	SoldierManager();
+		const Unit* FindNearestMineralPatch(const Point2D& start, Bot *bot);
 
-	void Update(Bot* bot);
+		Point2D FindRandomLocationInArea(Point2D center, float radius);
 
-	void OnBuildingConstructionComplete(Bot* bot, const Unit* unit);
+		Point2D GetRandomPositionInArea(Point2D center, float radius);
 
-	void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+	public:
+		SoldierManager();
 
-};
+		void Update(Bot* bot);
 
+		void OnBuildingConstructionComplete(Bot* bot, const Unit* unit);
+
+		void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+
+	};
+}
 #endif  //!UNIT_MANAGER_H

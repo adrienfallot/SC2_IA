@@ -8,25 +8,26 @@
 #include <vector>
 #include "sc2utils/sc2_manage_process.h"
 
-using namespace sc2;
+namespace SonateEnCMineurPourLesBotsConquerant {
+	using namespace sc2;
 
-class MapParser {
+	class MapParser {
 
-private:
-	std::vector<Point2D> defense_point_;
+	private:
+		std::vector<Point2D> defense_point_;
 
-public:
-	MapParser();
+	public:
+		MapParser();
 
-	void OnGameStart(); //TODO : Set first value of defense_point_.
+		void OnGameStart(); //TODO : Set first value of defense_point_.
 
-	void Update();  //TODO : --low-priority -> Analyse part of map destroyed and adapt anything that should change after that.
+		void Update();  //TODO : --low-priority -> Analyse part of map destroyed and adapt anything that should change after that.
 
-	void OnBuildingConstructionCompleted(const Unit* unit);  //TODO : When CommandCenter built, add new defense point.
+		void OnBuildingConstructionCompleted(const Unit* unit);  //TODO : When CommandCenter built, add new defense point.
 
-	void OnUnitDestroyed(const Unit* unit);  //TODO : When ComandCenter Destroyed, remove defense point
+		void OnUnitDestroyed(const Unit* unit);  //TODO : When ComandCenter Destroyed, remove defense point
 
-	std::vector<Point2D> GetDefensePoint();
-};
-
+		std::vector<Point2D> GetDefensePoint();
+	};
+}
 #endif  //!MAP_PARSER_H

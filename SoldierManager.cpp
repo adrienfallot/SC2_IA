@@ -71,6 +71,9 @@ void SoldierManager::DetermineActionForIdleSoldiers(Bot* bot)
 		case UNIT_TYPEID::TERRAN_MARINE:
 			action_found_for_soldier = DetermineActionForMarine(bot, soldier_idle, enought_marines_for_attack, enought_sneeky_marines_for_attack);
 			break;
+		case UNIT_TYPEID::TERRAN_SCV:
+			action_found_for_soldier = DetermineActionForSCV(bot, soldier_idle);
+			break;
 		default:
 			//If unit isn't managed by this module, delete it from vector.
 			idle_soldiers_.erase(idle_soldiers_.begin() + i);
@@ -105,7 +108,22 @@ bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle,
 }
 
 bool SoldierManager::DetermineActionForSCV(Bot* bot, const Unit* scv_idle){
-	if (scv_idle->pos.x > 85 && scv_idle->pos.y > 120) {
+	
+	if (scv_idle->pos.x <= 80 || scv_idle->pos.y <= 120)
+	{
+		Units refineries = bot->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_REFINERY));
+		std::cout << refineries.size() << std::endl;
+		
+		for (const auto& refinery : refineries) {
+
+			if (refinery->assigned_harvesters < refinery->ideal_harvesters) {
+				bot->Actions()->UnitCommand(scv_idle, ABILITY_ID::HARVEST_GATHER, refinery);
+			}
+		}
+
+	}
+	else if (scv_idle->pos.x > 85 && scv_idle->pos.y > 120)
+	{
 		const Unit* nearest_mineral_patch = FindNearestMineralPatch(scv_idle->pos, bot);
 		bot->Actions()->UnitCommand(scv_idle, ABILITY_ID::HARVEST_GATHER, nearest_mineral_patch);
 		return true;

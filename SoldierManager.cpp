@@ -158,15 +158,6 @@ bool SoldierManager::DetermineActionForSCV(Bot* bot, const Unit* scv_idle){
 	return false;
 }
 
-<<<<<<< HEAD
-Point2D SoldierManager::GetRandomPositionInArea(Point2D center, float radius)
-{
-	Point2D randomPosition = center;
-	randomPosition.x += radius * cos(rand());
-	randomPosition.y += radius * sin(rand());
-
-	return randomPosition;
-=======
 const Unit* SoldierManager::FindNearestMineralPatch(const Point2D& start, Bot *bot) {
 	Units units = bot->Observation()->GetUnits(Unit::Alliance::Neutral);
 	float distance = std::numeric_limits<float>::max();
@@ -191,5 +182,4 @@ Point2D SoldierManager::FindRandomLocationInArea(Point2D center, float radius)
 	location.y += radius * sin(rand());
 
 	return location;
->>>>>>> 80b1ac51dbef1dce948585240bd6c5dd8f5950d5
 }

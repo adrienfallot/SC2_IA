@@ -109,13 +109,30 @@ Build::Build(Building* building, Point2D position, bool coreBuilding, bool rebui
 	this->rebuild_if_destroyed_ = rebuildIfDestroyed;
 }
 
-Point2D Build::GetPosition() {
-	return position_;
-}
-
 const Point2D Build::GetPosition() const{
 	return position_;
 }
+
+
+/////// BUILD RAFINERY /////
+
+BuildRafinery::BuildRafinery() : Build() {
+
+	this->vespene_geyser_ = nullptr;
+}
+
+BuildRafinery::BuildRafinery(Building* building, const Unit* vespene_geyser, bool coreBuilding,	bool rebuildIfDestroyed) :
+															Build(building, Point2D(), coreBuilding, rebuildIfDestroyed) {
+
+	this->vespene_geyser_ = vespene_geyser;
+}
+
+const Unit* BuildRafinery::GetGeyser() {
+	std::cout << "BRUH" << std::endl;
+	return vespene_geyser_;
+}
+
+/////// BUILD ORDER  /////
 
 BuildOrder::BuildOrder() {}
 
@@ -155,7 +172,14 @@ void BuildingManager::TryBuilding(Bot *bot) {
 		CONSTRUCTION_STATE dependenciesState = building_to_build->building_->GetDependenciesConstructionState(observation);
 		if (dependenciesState == CONSTRUCTION_STATE::BUILT){
 			if (observation->GetMinerals() > building_to_build->building_->GetCostToBuildInMinerals()) {
-				BuildBuilding(bot, building_to_build);
+
+				if (building_to_build->building_->id_ == UNIT_TYPEID::TERRAN_REFINERY) {
+					BuildBuilding(bot, building_to_build->building_->GetIdOfActionToBuild(), ((BuildRafinery*)building_to_build)->GetGeyser());
+				}
+				else {
+					BuildBuilding(bot, building_to_build->building_->GetIdOfActionToBuild(), building_to_build->GetPosition());
+				}
+
 			}
 		}
 		else if (dependenciesState == CONSTRUCTION_STATE::INEXISTANT) {
@@ -179,12 +203,44 @@ void BuildingManager::AddInexistantDependenciesToPile(const ObservationInterface
 	}
 }
 
-void BuildingManager::BuildBuilding(Bot *bot, const Build* building_to_build) {
+void BuildingManager::BuildBuilding(Bot *bot, sc2::ABILITY_ID id_of_action_to_build, Vector2D target_position) {
 	const Unit* unitBuilder = GetBuilder(bot->Observation());
 
-	bot->Actions()->UnitCommand(unitBuilder, building_to_build->building_->GetIdOfActionToBuild(), building_to_build->GetPosition());
+	bot->Actions()->UnitCommand(unitBuilder, id_of_action_to_build, target_position);
 
 	build_order_->builds_pile_.pop_back();
+}
+
+void BuildingManager::BuildBuilding(Bot *bot, sc2::ABILITY_ID id_of_action_to_build, const Unit* target_geyser) {
+	const Unit* unitBuilder = GetBuilder(bot->Observation());
+
+	const Unit* target = target_geyser;
+	if (target == nullptr) {
+		target = FindNearestGeyser(bot, unitBuilder->pos);
+	}
+
+	std::cout << target << std::endl;
+
+	bot->Actions()->UnitCommand(unitBuilder, id_of_action_to_build, target);
+
+	build_order_->builds_pile_.pop_back();
+}
+
+
+const Unit* BuildingManager::FindNearestGeyser(Bot *bot, const Point2D& start) {
+	Units units = bot->Observation()->GetUnits(Unit::Alliance::Neutral);
+	float distance = std::numeric_limits<float>::max();
+	const Unit* target = nullptr;
+	for (const auto& u : units) {
+		if (u->unit_type == UNIT_TYPEID::NEUTRAL_VESPENEGEYSER) {
+			float d = DistanceSquared2D(u->pos, start);
+			if (d < distance) {
+				distance = d;
+				target = u;
+			}
+		}
+	}
+	return target;
 }
 
 const Unit* BuildingManager::GetBuilder(const ObservationInterface *observation) {

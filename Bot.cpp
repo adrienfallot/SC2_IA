@@ -11,6 +11,7 @@ void Bot::OnGameFullStart() {
 	}
 
 void Bot::OnGameStart() {
+	Building* terranRafinery = new Building(UNIT_TYPEID::TERRAN_REFINERY, ABILITY_ID::BUILD_REFINERY, 75, 3, 3, 21);
 	Building* terranSupplyDepot = new Building(UNIT_TYPEID::TERRAN_SUPPLYDEPOT, ABILITY_ID::BUILD_SUPPLYDEPOT, 100, 2, 2, 21);
 	Building* terranBarracks = new Building(UNIT_TYPEID::TERRAN_BARRACKS, ABILITY_ID::BUILD_BARRACKS, 150, 3, 3, 46);
 	Building* terranAutoTurret = new Building(UNIT_TYPEID::TERRAN_AUTOTURRET, ABILITY_ID::EFFECT_AUTOTURRET, 125, 3, 3, 18);
@@ -25,6 +26,7 @@ void Bot::OnGameStart() {
 	std::vector<Build*> buildsPile;
 
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 3, 0)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 3, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 5, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 7, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 9, 0)));
@@ -35,6 +37,7 @@ void Bot::OnGameStart() {
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, 7, 3)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, 9, 3)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, 11, 3)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, 13, 3)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, -3, -3)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, -5, -3)));
@@ -44,6 +47,7 @@ void Bot::OnGameStart() {
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -5, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -7, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -9, 0)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -11, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -13, 0)));
 	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, -11, -3)));

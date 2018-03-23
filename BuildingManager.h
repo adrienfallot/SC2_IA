@@ -15,7 +15,6 @@ enum CONSTRUCTION_STATE {INEXISTANT, IN_CONSTRUCTION, BUILT};
 
 class Building {
 
-	UNIT_TYPEID id_;
 	ABILITY_ID construction_id_;  // Id of the action to construct.
 	int minerals_to_build_;
 	int width_;
@@ -33,6 +32,7 @@ class Building {
  public:
 
 	std::vector<Building*> dependencies_;
+	UNIT_TYPEID id_;
 
 	Building();
 
@@ -64,10 +64,21 @@ class Build {
 	Build(Building *building, Point2D position, bool core_building = false, bool rebuild_if_destroyed = false);
 
 	//<Getter>
-	Point2D GetPosition();
-
 	const Point2D GetPosition() const;
 	//</Getter>
+};
+
+class BuildRafinery : public Build {
+
+	const Unit* vespene_geyser_;
+
+public:
+
+	BuildRafinery();
+
+	BuildRafinery(Building *building, const Unit* vespene_geyser = nullptr, bool core_building = false, bool rebuild_if_destroyed = false);
+
+	const Unit* GetGeyser();
 };
 
 // TODO, The differents buildings should be interface for the parameters not changings.
@@ -95,7 +106,10 @@ class BuildingManager {
 
 	void TryBuilding(Bot *bot);
 
-	void BuildBuilding(Bot *bot, const Build* building_to_build);
+	void BuildBuilding(Bot *bot, sc2::ABILITY_ID id_of_action_to_build, Vector2D target_position);
+	void BuildBuilding(Bot *bot, sc2::ABILITY_ID id_of_action_to_build, const Unit* target_geyser);
+
+	const Unit* FindNearestGeyser(Bot *bot, const Point2D& start);
 
 	const Unit* GetBuilder(const ObservationInterface *observation);
 

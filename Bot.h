@@ -51,6 +51,7 @@ class Bot : public Agent {
 
 public:
 	std::vector<Point2D> barrackWithTechLab_;
+	std::vector<Point2D> barrackWithTechLabBuilt_;
 
 	Point2D TransformPoint2D(Point2D point, int x_shift, int y_shift);
 

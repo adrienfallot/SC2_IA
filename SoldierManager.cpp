@@ -117,6 +117,7 @@ bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle,
 	if (enought_marines_for_attack && (marine_idle->pos.x <= 80 || marine_idle->pos.y <= 120))
 	{
 		const GameInfo& game_info = bot->Observation()->GetGameInfo();
+
 		Point2D target_location = FindRandomLocationInArea(game_info.enemy_start_locations.front(), 8);
 		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, target_location);
 		number_of_idle_marines_--;
@@ -157,6 +158,15 @@ bool SoldierManager::DetermineActionForSCV(Bot* bot, const Unit* scv_idle){
 	return false;
 }
 
+<<<<<<< HEAD
+Point2D SoldierManager::GetRandomPositionInArea(Point2D center, float radius)
+{
+	Point2D randomPosition = center;
+	randomPosition.x += radius * cos(rand());
+	randomPosition.y += radius * sin(rand());
+
+	return randomPosition;
+=======
 const Unit* SoldierManager::FindNearestMineralPatch(const Point2D& start, Bot *bot) {
 	Units units = bot->Observation()->GetUnits(Unit::Alliance::Neutral);
 	float distance = std::numeric_limits<float>::max();
@@ -181,4 +191,5 @@ Point2D SoldierManager::FindRandomLocationInArea(Point2D center, float radius)
 	location.y += radius * sin(rand());
 
 	return location;
+>>>>>>> 80b1ac51dbef1dce948585240bd6c5dd8f5950d5
 }

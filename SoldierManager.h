@@ -42,6 +42,8 @@ private:
 
 	Point2D FindRandomLocationInArea(Point2D center, float radius);
 
+	Point2D GetRandomPositionInArea(Point2D center, float radius);
+
 public:
 	SoldierManager();
 

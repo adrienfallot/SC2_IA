@@ -24,13 +24,52 @@ void Bot::OnGameStart() {
 	terranBarracks->dependencies_.push_back(terranSupplyDepot);
 
 	const Unit* commandCenter = Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER)).front();
-	Point2D commandCenterPosition = commandCenter->pos; //114.5 25.5
-	Point2D secondCommandCenterPosition = Point2D(98.5, 138.5);
+	commandCenterPosition = commandCenter->pos; //114.5 25.5
+	int factor_start_pos = (commandCenterPosition.y > 70 ? -1 : 1);
+	secondCommandCenterPosition = Point2D(98.5, 138.5);
 	std::vector<Build*> buildsPile;
+
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 7.5, -7.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 1.5, -10.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 3.5, -10.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 5.5, -10.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 7.5, -9.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 9.5, -7.5)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
+	buildsPile.push_back(new Build(terranAutoTurret, TransformPoint2D(secondCommandCenterPosition, 3.5, -3.5)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, 12, -4)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 7.5, -0.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 4.5, 3.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, -7.5, -0.5)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 10.5, -0.5)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 9.5, 3.5)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, 7, -4)));
+	buildsPile.push_back(new Build(terranBarracksWithTechLab, TransformPoint2D(commandCenterPosition, -9 * factor_start_pos, 8 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -1.5 * factor_start_pos, 5.5 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, -5.5, 0.5)));
+	buildsPile.push_back(new Build(terranBarracksWithTechLab, TransformPoint2D(secondCommandCenterPosition, 2, -6)));
+	buildsPile.push_back(new Build(terranAutoTurret, TransformPoint2D(commandCenterPosition, -1.5 * factor_start_pos, 3.5 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranAutoTurret, TransformPoint2D(commandCenterPosition, -4.5 * factor_start_pos, 6.5 * factor_start_pos)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, -2.5, -6.5)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, -6.5, -2.5)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, -4, -4)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, -7 * factor_start_pos, -1 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranCommandCenter, secondCommandCenterPosition));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -8.5 * factor_start_pos, 3.5 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranEngineeringBay, TransformPoint2D(commandCenterPosition, -4 * factor_start_pos, -1 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, -4 * factor_start_pos, 4 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -11.5 * factor_start_pos, 4.5 * factor_start_pos)));
+	buildsPile.push_back(new BuildRafinery(terranRafinery));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -16.5 * factor_start_pos, -0.5 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -13.5 * factor_start_pos, 4.5 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, -11 * factor_start_pos, 0 * factor_start_pos)));
+	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -16.5 * factor_start_pos, 1.5 * factor_start_pos)));
 
 	/**/
 
-	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, 11, -3)));
+	/*buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, 11, -3)));
 	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, 13, -3)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, 13, 0)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(commandCenterPosition, 13, 3)));
@@ -66,7 +105,10 @@ void Bot::OnGameStart() {
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -11, 0)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(commandCenterPosition, -13, 0)));
 	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, -11, -3)));
-	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, -13, -3)));
+	buildsPile.push_back(new Build(terranMissileTurret, TransformPoint2D(commandCenterPosition, -13, -3)));*/
+
+
+
 	//45.5, 20.5
 	//98.5, 138.5
 	building_manager_ = new BuildingManager(buildsPile);
@@ -98,6 +140,9 @@ void Bot::OnUnitIdle(const Unit* unit) {
 }
 
 void Bot::OnBuildingConstructionComplete(const Unit* unit) {
+
+	std::cout << this->secondCommandCenterPosition.x - unit->pos.x << std::endl;
+	std::cout << this->secondCommandCenterPosition.y - unit->pos.y << std::endl << std::endl;
 	soldier_manager_->OnBuildingConstructionComplete(this, unit);
 }
 

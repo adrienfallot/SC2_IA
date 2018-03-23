@@ -31,6 +31,8 @@ class ProductionManager {
 	
 	bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
 
+	bool GetIfHasATechLab(Bot *bot, const Unit* barrack_idle);
+
  public:
 	ProductionManager();
 

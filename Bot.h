@@ -21,7 +21,6 @@ class Bot : public Agent {
 
 	SoldierManager* soldier_manager_;
 
-
 	virtual void OnGameFullStart() final;
 
 	virtual void OnGameStart() final;
@@ -50,6 +49,9 @@ class Bot : public Agent {
 
 public:
 	std::vector<Point2D> barrackWithTechLab_;
+	std::vector<Point2D> barrackWithTechLabBuilt_;
+	Point2D commandCenterPosition;
+	Point2D secondCommandCenterPosition;
 
 	Point2D TransformPoint2D(Point2D point, int x_shift, int y_shift);
 

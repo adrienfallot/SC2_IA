@@ -20,11 +20,13 @@ private:
 	int number_of_idle_marines_ = 0;
 	int number_of_sneeky_idle_marines_ = 0;
 	int number_min_of_marines_to_attack_ = 20;
-	int number_min_of_sneeky_marines_to_attack_ = 50;
+	int number_min_of_sneeky_marines_to_attack_ = 35;
 
 	std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
 
 	void DetermineActionForIdleSoldiers(Bot* bot);
+	
+	bool DetermineActionForMarauder(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 
 	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 	

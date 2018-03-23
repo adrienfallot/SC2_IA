@@ -40,6 +40,8 @@ private:
 	
 	const Unit* FindNearestMineralPatch(const Point2D& start, Bot *bot);
 
+	Point2D FindRandomLocationInArea(Point2D center, float radius);
+
 public:
 	SoldierManager();
 

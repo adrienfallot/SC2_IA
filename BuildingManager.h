@@ -9,133 +9,131 @@
 #include "sc2utils/sc2_manage_process.h"
 class Bot;
 
-namespace SonateEnCMineurPourLesBotsConquerant {
+using namespace sc2;
 
-	using namespace sc2;
+enum CONSTRUCTION_STATE { INEXISTANT, IN_CONSTRUCTION, BUILT };
 
-	enum CONSTRUCTION_STATE { INEXISTANT, IN_CONSTRUCTION, BUILT };
+class Building {
 
-	class Building {
+	ABILITY_ID construction_id_;  // Id of the action to construct.
+	int minerals_to_build_;
+	int width_;
+	int height_;
+	int construction_duration_;  // Time of construction in second.
 
-		ABILITY_ID construction_id_;  // Id of the action to construct.
-		int minerals_to_build_;
-		int width_;
-		int height_;
-		int construction_duration_;  // Time of construction in second.
+	int GetNumberOfBuildingOfThisType(const ObservationInterface *observation);
 
-		int GetNumberOfBuildingOfThisType(const ObservationInterface *observation);
+	int GetNumberOfBuildingOfThisTypeInConstruction(const ObservationInterface *observation);
 
-		int GetNumberOfBuildingOfThisTypeInConstruction(const ObservationInterface *observation);
+	bool DependenciesCompleted(const ObservationInterface *observation);
 
-		bool DependenciesCompleted(const ObservationInterface *observation);
+	bool DependenciesInConstruction(const ObservationInterface *observation);
 
-		bool DependenciesInConstruction(const ObservationInterface *observation);
+public:
 
-	public:
+	std::vector<Building*> dependencies_;
+	UNIT_TYPEID id_;
 
-		std::vector<Building*> dependencies_;
-		UNIT_TYPEID id_;
+	Building();
 
-		Building();
+	Building(UNIT_TYPEID id, ABILITY_ID constructionId, int mineralsToBuild, int width, int height, int constructionDuration);
 
-		Building(UNIT_TYPEID id, ABILITY_ID constructionId, int mineralsToBuild, int width, int height, int constructionDuration);
+	//<Getter>
+	int GetCostToBuildInMinerals();
 
-		//<Getter>
-		int GetCostToBuildInMinerals();
+	ABILITY_ID GetIdOfActionToBuild();
 
-		ABILITY_ID GetIdOfActionToBuild();
+	int GetWidth();
+	//</Getter>
 
-		int GetWidth();
-		//</Getter>
+	CONSTRUCTION_STATE GetDependenciesConstructionState(const ObservationInterface *observation);
 
-		CONSTRUCTION_STATE GetDependenciesConstructionState(const ObservationInterface *observation);
+	std::vector<Building*> GetUnbuiltDependencies(const ObservationInterface *observation);
+};
 
-		std::vector<Building*> GetUnbuiltDependencies(const ObservationInterface *observation);
-	};
+class Build {
 
-	class Build {
+	Point2D position_;
+	bool core_building_;  // Is part of the preselected strat's build order.
+	bool rebuild_if_destroyed_;
 
-		Point2D position_;
-		bool core_building_;  // Is part of the preselected strat's build order.
-		bool rebuild_if_destroyed_;
+public:
 
-	public:
+	Building * building_;  // Do not modify it except if you want to modify this for every other class using it.
 
-		Building * building_;  // Do not modify it except if you want to modify this for every other class using it.
+	Build();
 
-		Build();
+	Build(Building *building, Point2D position, bool core_building = false, bool rebuild_if_destroyed = false);
 
-		Build(Building *building, Point2D position, bool core_building = false, bool rebuild_if_destroyed = false);
+	//<Getter>
+	const Point2D GetPosition() const;
+	//</Getter>
+};
 
-		//<Getter>
-		const Point2D GetPosition() const;
-		//</Getter>
-	};
+class BuildRafinery : public Build {
 
-	class BuildRafinery : public Build {
+	const Unit* vespene_geyser_;
 
-		const Unit* vespene_geyser_;
+public:
 
-	public:
+	BuildRafinery();
 
-		BuildRafinery();
+	BuildRafinery(Building *building, const Unit* vespene_geyser = nullptr, bool core_building = false, bool rebuild_if_destroyed = false);
 
-		BuildRafinery(Building *building, const Unit* vespene_geyser = nullptr, bool core_building = false, bool rebuild_if_destroyed = false);
+	const Unit* GetGeyser();
+};
 
-		const Unit* GetGeyser();
-	};
+// TODO, The differents buildings should be interface for the parameters not changings.
 
-	// TODO, The differents buildings should be interface for the parameters not changings.
+class BuildOrder {
+	int number_of_bases_ = 1;
 
-	class BuildOrder {
-		int number_of_bases_ = 1;
+	// Determine which building to build, and when. Also has a build order at start.
+public:
 
-		// Determine which building to build, and when. Also has a build order at start.
-	public:
+	std::vector<Build*> builds_pile_;
 
-		std::vector<Build*> builds_pile_;
+	BuildOrder();
 
-		BuildOrder();
+	BuildOrder(std::vector<Build*> builds_pile);
 
-		BuildOrder(std::vector<Build*> builds_pile);
+	bool is_empty();
 
-		bool is_empty();
+	void DetermineNextBuilding(Bot *bot);
+	// TODO add function to determine what to build next in function of game observation and current buildings_pile. 
+	// FOR EXAMPLE : if supply_max < 200 and buildings_pile doesn't contain 2 supply_max per barracks + command center : add one.
+};
 
-		void DetermineNextBuilding(Bot *bot);
-		// TODO add function to determine what to build next in function of game observation and current buildings_pile. 
-		// FOR EXAMPLE : if supply_max < 200 and buildings_pile doesn't contain 2 supply_max per barracks + command center : add one.
-	};
+class BuildingManager {
 
-	class BuildingManager {
+	// Tells the building what to produce, and when.
+	BuildOrder *build_order_;
 
-		// Tells the building what to produce, and when.
-		BuildOrder *build_order_;
+	void TryBuilding(Bot *bot);
 
-		void TryBuilding(Bot *bot);
+	void BuildBuilding(Bot *bot, const Build* building_to_build, Vector2D target_position);
+	void BuildBuilding(Bot *bot, const Build* building_to_build, const Unit* target_geyser);
 
-		void BuildBuilding(Bot *bot, const Build* building_to_build, Vector2D target_position);
-		void BuildBuilding(Bot *bot, const Build* building_to_build, const Unit* target_geyser);
+	const Unit* FindNearestGeyser(Bot *bot, const Point2D& start);
 
-		const Unit* FindNearestGeyser(Bot *bot, const Point2D& start);
+	const Unit* GetBuilder(const ObservationInterface *observation, const Build* building_to_build);
 
-		const Unit* GetBuilder(const ObservationInterface *observation, const Build* building_to_build);
+	// TODO :: Find a better name : InexistantDependencies do not reflect well we are talking about unbuilt + not in construction.
+	// TODO :: Find why we can't have a const Building* as argument for this function (doesn't work for getUnbuiltDependencies call
+	void AddInexistantDependenciesToPile(const ObservationInterface *observation, Building* building_to_build);
 
-		// TODO :: Find a better name : InexistantDependencies do not reflect well we are talking about unbuilt + not in construction.
-		// TODO :: Find why we can't have a const Building* as argument for this function (doesn't work for getUnbuiltDependencies call
-		void AddInexistantDependenciesToPile(const ObservationInterface *observation, Building* building_to_build);
+	// TODO :: EXIST IN MULTIPLE CLASS, SRP BROKEN!
+	Point2D BuildingManager::TransformPoint2D(Point2D point, int x_shift, int y_shift);
 
-		// TODO :: EXIST IN MULTIPLE CLASS, SRP BROKEN!
-		Point2D BuildingManager::TransformPoint2D(Point2D point, int x_shift, int y_shift);
+public:
+	BuildingManager();
+	BuildingManager(BuildOrder* openingBuildOrder);
+	BuildingManager(std::vector<Build*> buildings_pile);
 
-	public:
-		BuildingManager();
-		BuildingManager(BuildOrder* openingBuildOrder);
-		BuildingManager(std::vector<Build*> buildings_pile);
+	void Update(Bot *bot);
 
-		void Update(Bot *bot);
+};
 
-	};
-}
 #endif // !BUILDING_MANAGER_H
 
 // TODO If dependency not complete, build it.

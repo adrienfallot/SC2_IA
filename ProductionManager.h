@@ -9,40 +9,38 @@
 #include "sc2utils/sc2_manage_process.h"
 class Bot;
 
-namespace SonateEnCMineurPourLesBotsConquerant {
+using namespace sc2;
 
-	using namespace sc2;
+class ProductionManager {
 
-	class ProductionManager {
+private:
+	int current_infantery_armor_level = 0;
+	int current_infantery_weapon_level = 0;
 
-	private:
-		int current_infantery_armor_level = 0;
-		int current_infantery_weapon_level = 0;
+	std::vector<const Unit*> idle_buildings_;
 
-		std::vector<const Unit*> idle_buildings_;
+	void DetermineProductionForIdleBuildings(Bot* bot);
 
-		void DetermineProductionForIdleBuildings(Bot* bot);
+	bool DetermineProductionForCommandCenter(Bot* bot, const Unit* command_center_idle);
 
-		bool DetermineProductionForCommandCenter(Bot* bot, const Unit* command_center_idle);
+	bool DetermineProductionForBarracks(Bot* bot, const Unit* barracks_idle);
 
-		bool DetermineProductionForBarracks(Bot* bot, const Unit* barracks_idle);
+	bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
 
-		bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
+	bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
 
-		bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
+	bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
 
-		bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
+	bool GetIfHasATechLab(Bot *bot, const Unit* barrack_idle);
 
-		bool GetIfHasATechLab(Bot *bot, const Unit* barrack_idle);
+public:
+	ProductionManager();
 
-	public:
-		ProductionManager();
+	void Update(Bot* bot);
 
-		void Update(Bot* bot);
+	void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
 
-		void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+};
 
-	};
-}
 
 #endif  //!PRODUCTION_MANAGER_H

@@ -29,6 +29,10 @@ int Building::GetCostToBuildInMinerals() {
 	return minerals_to_build_;
 }
 
+int Building::GetWidth() {
+	return this->width_;
+}
+
 ABILITY_ID Building::GetIdOfActionToBuild() {
 	return construction_id_;
 }
@@ -216,7 +220,9 @@ void BuildingManager::BuildBuilding(Bot *bot, const Build* building_to_build, Ve
 	const Unit* unitBuilder = GetBuilder(bot->Observation(), building_to_build);
 
 	bot->Actions()->UnitCommand(unitBuilder, building_to_build->building_->GetIdOfActionToBuild(), target_position);
-
+	if (building_to_build->building_->GetIdOfActionToBuild() == ABILITY_ID::BUILD_BARRACKS && building_to_build->building_->GetWidth() == 4) {
+		bot->barrackWithTechLab_.push_back(target_position);
+	}
 	build_order_->builds_pile_.pop_back();
 }
 

@@ -42,6 +42,8 @@ class Building {
 	int GetCostToBuildInMinerals();
 
 	ABILITY_ID GetIdOfActionToBuild();
+
+	int GetWidth();
 	//</Getter>
 
 	CONSTRUCTION_STATE GetDependenciesConstructionState(const ObservationInterface *observation);

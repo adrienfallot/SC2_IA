@@ -28,6 +28,8 @@ class ProductionManager {
 	bool DetermineProductionForEngineeringBay(Bot* bot, const Unit* barracks_idle);
 
 	bool UnitCanBeConstructed(const ObservationInterface* observation, const int mineral_cost_of_unit, const int vespene_cost_of_unit, const int space_taken_by_unit);
+	
+	bool GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle);
 
  public:
 	ProductionManager();

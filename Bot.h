@@ -22,7 +22,6 @@ class Bot : public Agent {
 	SoldierManager* soldier_manager_;
 
 
-
 	virtual void OnGameFullStart() final;
 
 	virtual void OnGameStart() final;

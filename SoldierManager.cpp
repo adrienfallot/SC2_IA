@@ -93,14 +93,16 @@ bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle,
 	if (enought_marines_for_attack && (marine_idle->pos.x <= 80 || marine_idle->pos.y <= 120))
 	{
 		const GameInfo& game_info = bot->Observation()->GetGameInfo();
-		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, game_info.enemy_start_locations.front());
+		Point2D target_location = FindRandomLocationInArea(game_info.enemy_start_locations.front(), 8);
+		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, target_location);
 		number_of_idle_marines_--;
 		return true;
 	}
 	else if (enought_sneeky_marines_for_attack && marine_idle->pos.x > 80 && marine_idle->pos.y > 120)
 	{
 		const GameInfo& game_info = bot->Observation()->GetGameInfo();
-		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, game_info.enemy_start_locations.front());
+		Point2D target_location = FindRandomLocationInArea(game_info.enemy_start_locations.front(), 8);
+		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, target_location);
 		number_of_sneeky_idle_marines_--;
 		return true;
 	}
@@ -145,4 +147,14 @@ const Unit* SoldierManager::FindNearestMineralPatch(const Point2D& start, Bot *b
 		}
 	}
 	return target;
+}
+
+Point2D SoldierManager::FindRandomLocationInArea(Point2D center, float radius)
+{
+	Point2D location = center;
+
+	location.x += radius * cos(rand());
+	location.y += radius * sin(rand());
+
+	return location;
 }

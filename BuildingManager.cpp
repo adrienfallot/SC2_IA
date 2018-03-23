@@ -84,7 +84,7 @@ CONSTRUCTION_STATE Building::GetDependenciesConstructionState(const ObservationI
 std::vector<Building*> Building::GetUnbuiltDependencies(const ObservationInterface *observation) {
 	//TODO :: GET A BETTER NAME : it's not unbuilt dependencies but inexistants ones : unbuilt + not in construction.
 	std::vector<Building*> unbuiltDependencies;
-	
+
 	for (Building* dependency : dependencies_) {
 		if (dependency->GetNumberOfBuildingOfThisType(observation) == 0 && dependency->GetNumberOfBuildingOfThisTypeInConstruction(observation) == 0) {
 			//TODO :: LINE TOO LONG, SHORTEN IT.
@@ -113,7 +113,7 @@ Point2D Build::GetPosition() {
 	return position_;
 }
 
-const Point2D Build::GetPosition() const{
+const Point2D Build::GetPosition() const {
 	return position_;
 }
 
@@ -126,6 +126,16 @@ BuildOrder::BuildOrder(std::vector<Build*> builds_pile) {
 bool BuildOrder::is_empty() {
 	return this->builds_pile_.size() == 0;
 }
+
+void BuildOrder::DetermineNextBuilding(Bot *bot) {
+	const ObservationInterface* observation = bot->Observation();
+	const int COST_OF_COMMAND_CENTER = 400;
+	if (number_of_bases_ == 1 && observation->GetMinerals() >= COST_OF_COMMAND_CENTER){
+		Building* terranCommandCenter = new Building(UNIT_TYPEID::TERRAN_COMMANDCENTER, ABILITY_ID::BUILD_COMMANDCENTER, 400, 3, 3, 71);
+		this->builds_pile_.insert(this->builds_pile_.begin(), 1, new Build(terranCommandCenter, Point2D(98.5, 138.5)));
+	}
+}
+
 //TODO add function to determine what to build next in function of game observation and current buildings_pile. 
 // FOR EXAMPLE : if supply_max < 200 and buildings_pile doesn't contain 2 supply_max per barracks + command center : add one.
 
@@ -180,27 +190,41 @@ void BuildingManager::AddInexistantDependenciesToPile(const ObservationInterface
 }
 
 void BuildingManager::BuildBuilding(Bot *bot, const Build* building_to_build) {
-	const Unit* unitBuilder = GetBuilder(bot->Observation());
+	const Unit* unitBuilder = GetBuilder(bot->Observation(), building_to_build);
 
 	bot->Actions()->UnitCommand(unitBuilder, building_to_build->building_->GetIdOfActionToBuild(), building_to_build->GetPosition());
 
 	build_order_->builds_pile_.pop_back();
 }
 
-const Unit* BuildingManager::GetBuilder(const ObservationInterface *observation) {
+const Unit* BuildingManager::GetBuilder(const ObservationInterface *observation, const Build* building_to_build) {
 	const Unit* unit_to_build = nullptr;
 	Units units = observation->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
+	
+	if (building_to_build->GetPosition().x > 80 && building_to_build->GetPosition().y > 120) {
+		for (const auto& unit : units) {
+			if (unit->orders.size() == 0) {
+				if (unit->pos.x > 80 || unit->pos.y > 120) {
+					return unit;
+				}
+			}
+		}
+	}
 
 	for (const auto& unit : units) {
 		if (unit->orders.size() == 0) {
-			return unit;
+			if (unit->pos.x <= 80 || unit->pos.y <= 120) {
+				return unit;
+			}
 		}
 	}
 
 	for (const auto& unit : units) {
 		for (const auto& order : unit->orders) {
 			if (order.ability_id == ABILITY_ID::HARVEST_GATHER) {
-				return unit;
+				if (unit->pos.x <= 80 || unit->pos.y <= 120) {
+					return unit;
+				}
 			}
 		}
 	}

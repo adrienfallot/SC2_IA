@@ -18,20 +18,33 @@ private:
 	std::vector<const Unit*> idle_soldiers_;
 
 	int number_of_idle_marines_ = 0;
+	int number_of_sneeky_idle_marines_ = 0;
 	int number_min_of_marines_to_attack_ = 20;
+	int number_min_of_sneeky_marines_to_attack_ = 50;
 
 	std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
 
 	void DetermineActionForIdleSoldiers(Bot* bot);
 
-	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool send_marines);
+	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
+	
+	bool DetermineActionForSCV(Bot* bot, const Unit* scv_idle);
+
+	void GetIdleSneekySCVToHarvest(Bot* bot);
+
+	void GetNewSCVToWork(Bot* bot, const Unit* unit);
+	
+	const Unit* FindNearestMineralPatch(const Point2D& start, Bot *bot);
 
 public:
 	SoldierManager();
 
 	void Update(Bot* bot);
 
+	void OnBuildingConstructionComplete(Bot* bot, const Unit* unit);
+
 	void OnUnitIdle(Bot* bot, const Unit* buidling_idle);
+
 };
 
 #endif  //!UNIT_MANAGER_H

@@ -73,7 +73,8 @@ class Build {
 // TODO, The differents buildings should be interface for the parameters not changings.
 
 class BuildOrder {
-
+	int number_of_bases_ = 1; 
+	
 	// Determine which building to build, and when. Also has a build order at start.
  public:
 
@@ -84,6 +85,8 @@ class BuildOrder {
 	BuildOrder(std::vector<Build*> builds_pile);
 
 	bool is_empty();
+
+	void DetermineNextBuilding(Bot *bot);
 	// TODO add function to determine what to build next in function of game observation and current buildings_pile. 
 	// FOR EXAMPLE : if supply_max < 200 and buildings_pile doesn't contain 2 supply_max per barracks + command center : add one.
 };
@@ -97,7 +100,7 @@ class BuildingManager {
 
 	void BuildBuilding(Bot *bot, const Build* building_to_build);
 
-	const Unit* GetBuilder(const ObservationInterface *observation);
+	const Unit* GetBuilder(const ObservationInterface *observation, const Build* building_to_build);
 
 	// TODO :: Find a better name : InexistantDependencies do not reflect well we are talking about unbuilt + not in construction.
 	// TODO :: Find why we can't have a const Building* as argument for this function (doesn't work for getUnbuiltDependencies call

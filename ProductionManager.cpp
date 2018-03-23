@@ -76,6 +76,9 @@ bool ProductionManager::DetermineProductionForBarracks(Bot* bot, const Unit* bar
 	const int COST_OF_MARAUDER = 100;
 	const int COST_VESPENE_OF_MARAUDER = 25;
 	const int SPACE_TAKEN_BY_MARAUDER = 2;
+	const int COST_OF_GHOST = 150;
+	const int COST_VESPENE_OF_GHOST = 125;
+	const int SPACE_TAKEN_BY_GHOST = 2;
 	const int COST_OF_TECH_LAB = 50;
 	const int COST_VESPENE_OF_TECH_LAB = 25;
 	const ObservationInterface* observation = bot->Observation();
@@ -88,6 +91,13 @@ bool ProductionManager::DetermineProductionForBarracks(Bot* bot, const Unit* bar
 		}
 	}
 	if (GetIfHasATechLab(bot, barracks_idle)) {
+		if (UnitCanBeConstructed(observation, COST_OF_GHOST, COST_VESPENE_OF_GHOST, SPACE_TAKEN_BY_GHOST)) {
+			Units units = bot->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_GHOSTACADEMY));
+			if (units.size() > 0) {
+				bot->Actions()->UnitCommand(barracks_idle, ABILITY_ID::TRAIN_GHOST);
+				return true;
+			}
+		}
 		if (UnitCanBeConstructed(observation, COST_OF_MARAUDER, COST_VESPENE_OF_MARAUDER, SPACE_TAKEN_BY_MARAUDER)) {
 			bot->Actions()->UnitCommand(barracks_idle, ABILITY_ID::TRAIN_MARAUDER);
 			return true;

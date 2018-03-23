@@ -48,7 +48,7 @@ void SoldierManager::OnUnitIdle(Bot* bot, const Unit* unit_idle)
 				number_of_idle_marines_++;
 			}
 		}
-		else if (unit_idle->unit_type.ToType() == UNIT_TYPEID::TERRAN_MARAUDER) {
+		else if (unit_idle->unit_type.ToType() == UNIT_TYPEID::TERRAN_MARAUDER  || unit_idle->unit_type.ToType() == UNIT_TYPEID::TERRAN_GHOST) {
 			if (unit_idle->pos.x > 80 && unit_idle->pos.y > 120) {
 				number_of_sneeky_idle_marines_ += 2;
 			}
@@ -82,6 +82,9 @@ void SoldierManager::DetermineActionForIdleSoldiers(Bot* bot)
 		case UNIT_TYPEID::TERRAN_MARAUDER:
 				action_found_for_soldier = DetermineActionForMarauder(bot, soldier_idle, enought_marines_for_attack, enought_sneeky_marines_for_attack);
 				break;
+		case UNIT_TYPEID::TERRAN_GHOST:
+			action_found_for_soldier = DetermineActionForMarauder(bot, soldier_idle, enought_marines_for_attack, enought_sneeky_marines_for_attack);
+			break;
 		case UNIT_TYPEID::TERRAN_SCV:
 			action_found_for_soldier = DetermineActionForSCV(bot, soldier_idle);
 			break;
@@ -97,6 +100,11 @@ void SoldierManager::DetermineActionForIdleSoldiers(Bot* bot)
 			i--;
 		}
 	}
+}
+
+bool SoldierManager::DetermineActionForGhost(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack)
+{
+	return DetermineActionForGhost(bot, marauder_idle, enought_marines_for_attack, enought_sneeky_marines_for_attack);
 }
 
 bool SoldierManager::DetermineActionForMarauder(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack)

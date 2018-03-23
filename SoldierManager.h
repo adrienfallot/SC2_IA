@@ -25,7 +25,9 @@ private:
 	std::vector<Point2D> DetermineDefensePoint();  //TODO : Determine which point on the map should be defended.
 
 	void DetermineActionForIdleSoldiers(Bot* bot);
-	
+
+	bool SoldierManager::DetermineActionForGhost(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
+
 	bool DetermineActionForMarauder(Bot* bot, const Unit* marauder_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);
 
 	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool enought_marines_for_attack, bool enought_sneeky_marines_for_attack);

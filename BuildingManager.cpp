@@ -189,6 +189,9 @@ void BuildingManager::TryBuilding(Bot *bot) {
 				if (building_to_build->building_->id_ == UNIT_TYPEID::TERRAN_REFINERY) {
 					BuildBuilding(bot, building_to_build, ((BuildRafinery*)building_to_build)->GetGeyser());
 				}
+				else if (building_to_build->building_->id_ == UNIT_TYPEID::TERRAN_GHOSTACADEMY && observation->GetVespene() >= 50) {
+					BuildBuilding(bot, building_to_build, building_to_build->GetPosition());
+				}
 				else {
 					BuildBuilding(bot, building_to_build, building_to_build->GetPosition());
 				}

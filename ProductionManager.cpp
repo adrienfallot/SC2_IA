@@ -73,10 +73,30 @@ bool ProductionManager::DetermineProductionForBarracks(Bot* bot, const Unit* bar
 	// Returns true if action got assigned to the building.
 	const int COST_OF_MARINE = 50;
 	const int SPACE_TAKEN_BY_MARINE = 1;
+	const int COST_OF_TECH_LAB = 50;
+	const int COST_VESPENE_OF_TECH_LAB = 25;
 	const ObservationInterface* observation = bot->Observation();
+	if (UnitCanBeConstructed(observation, COST_OF_TECH_LAB, COST_VESPENE_OF_TECH_LAB, 0)) {
+		if (GetIfNeedATechLab(bot, barracks_idle)) {
+			std::cout << "BIDIDI" << std::endl;
+			bot->Actions()->UnitCommand(barracks_idle, ABILITY_ID::BUILD_TECHLAB_BARRACKS);
+			return true;
+		}
+	}
 	if (UnitCanBeConstructed(observation, COST_OF_MARINE, 0, SPACE_TAKEN_BY_MARINE)) {
 		bot->Actions()->UnitCommand(barracks_idle, ABILITY_ID::TRAIN_MARINE);
 		return true;
+	}
+	return false;
+}
+
+bool ProductionManager::GetIfNeedATechLab(Bot *bot, const Unit* barrack_idle) {
+	int i = 0;
+	for (i = 0; i < bot->barrackWithTechLab_.size(); i++) {
+		if (bot->barrackWithTechLab_[i].x == barrack_idle->pos.x && bot->barrackWithTechLab_[i].y == barrack_idle->pos.y) {
+			bot->barrackWithTechLab_.erase(bot->barrackWithTechLab_.begin() + i);
+			return true;
+		}
 	}
 	return false;
 }

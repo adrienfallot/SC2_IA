@@ -22,6 +22,7 @@ class Bot : public Agent {
 	SoldierManager* soldier_manager_;
 
 
+
 	virtual void OnGameFullStart() final;
 
 	virtual void OnGameStart() final;
@@ -49,6 +50,8 @@ class Bot : public Agent {
 	virtual void OnError(const std::vector<ClientError>& client_errors, const std::vector<std::string>& protocol_errors = {});
 
 public:
+	std::vector<Point2D> barrackWithTechLab_;
+
 	Point2D TransformPoint2D(Point2D point, int x_shift, int y_shift);
 
 	const Unit* FindNearestMineralPatch(const Point2D& start);

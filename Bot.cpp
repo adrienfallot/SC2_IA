@@ -15,6 +15,7 @@ void Bot::OnGameStart() {
 	Building* terranCommandCenter = new Building(UNIT_TYPEID::TERRAN_COMMANDCENTER, ABILITY_ID::BUILD_COMMANDCENTER, 400, 3, 3, 71);
 	Building* terranSupplyDepot = new Building(UNIT_TYPEID::TERRAN_SUPPLYDEPOT, ABILITY_ID::BUILD_SUPPLYDEPOT, 100, 2, 2, 21);
 	Building* terranBarracks = new Building(UNIT_TYPEID::TERRAN_BARRACKS, ABILITY_ID::BUILD_BARRACKS, 150, 3, 3, 46);
+	Building* terranBarracksWithTechLab = new Building(UNIT_TYPEID::TERRAN_BARRACKS, ABILITY_ID::BUILD_BARRACKS, 150, 4, 3, 46);
 	Building* terranAutoTurret = new Building(UNIT_TYPEID::TERRAN_AUTOTURRET, ABILITY_ID::EFFECT_AUTOTURRET, 125, 3, 3, 18);
 	Building* terranMissileTurret = new Building(UNIT_TYPEID::TERRAN_MISSILETURRET, ABILITY_ID::BUILD_MISSILETURRET, 100, 3, 3, 18);
 	Building* terranEngineeringBay = new Building(UNIT_TYPEID::TERRAN_ENGINEERINGBAY, ABILITY_ID::BUILD_ENGINEERINGBAY, 125, 3, 3, 25);
@@ -40,7 +41,7 @@ void Bot::OnGameStart() {
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, -2, -7)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, -2, -10)));
 	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, 6, -4)));
-	buildsPile.push_back(new Build(terranBarracks, TransformPoint2D(secondCommandCenterPosition, 9, -4)));
+	buildsPile.push_back(new Build(terranBarracksWithTechLab, TransformPoint2D(secondCommandCenterPosition, 9, -4)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 8, -7)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 8, -10)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 6, -7)));

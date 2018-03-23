@@ -222,6 +222,7 @@ void BuildingManager::BuildBuilding(Bot *bot, const Build* building_to_build, Ve
 	bot->Actions()->UnitCommand(unitBuilder, building_to_build->building_->GetIdOfActionToBuild(), target_position);
 	if (building_to_build->building_->GetIdOfActionToBuild() == ABILITY_ID::BUILD_BARRACKS && building_to_build->building_->GetWidth() == 4) {
 		bot->barrackWithTechLab_.push_back(target_position);
+		bot->barrackWithTechLab_.push_back(target_position);
 	}
 	build_order_->builds_pile_.pop_back();
 }

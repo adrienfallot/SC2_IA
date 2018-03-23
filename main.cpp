@@ -208,7 +208,7 @@ int main(int argc, char* argv[]) {
 	Bot bot;
 	coordinator.SetParticipants({
 		CreateParticipant(Race::Terran, &bot),
-		CreateComputer(Race::Terran)
+		CreateComputer(Race::Terran, Difficulty::Easy)
 		});
 
 	coordinator.LaunchStarcraft();

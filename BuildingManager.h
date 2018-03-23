@@ -15,7 +15,6 @@ enum CONSTRUCTION_STATE {INEXISTANT, IN_CONSTRUCTION, BUILT};
 
 class Building {
 
-	UNIT_TYPEID id_;
 	ABILITY_ID construction_id_;  // Id of the action to construct.
 	int minerals_to_build_;
 	int width_;
@@ -33,6 +32,7 @@ class Building {
  public:
 
 	std::vector<Building*> dependencies_;
+	UNIT_TYPEID id_;
 
 	Building();
 
@@ -42,6 +42,8 @@ class Building {
 	int GetCostToBuildInMinerals();
 
 	ABILITY_ID GetIdOfActionToBuild();
+
+	int GetWidth();
 	//</Getter>
 
 	CONSTRUCTION_STATE GetDependenciesConstructionState(const ObservationInterface *observation);
@@ -64,16 +66,28 @@ class Build {
 	Build(Building *building, Point2D position, bool core_building = false, bool rebuild_if_destroyed = false);
 
 	//<Getter>
-	Point2D GetPosition();
-
 	const Point2D GetPosition() const;
 	//</Getter>
+};
+
+class BuildRafinery : public Build {
+
+	const Unit* vespene_geyser_;
+
+public:
+
+	BuildRafinery();
+
+	BuildRafinery(Building *building, const Unit* vespene_geyser = nullptr, bool core_building = false, bool rebuild_if_destroyed = false);
+
+	const Unit* GetGeyser();
 };
 
 // TODO, The differents buildings should be interface for the parameters not changings.
 
 class BuildOrder {
-
+	int number_of_bases_ = 1; 
+	
 	// Determine which building to build, and when. Also has a build order at start.
  public:
 
@@ -84,6 +98,8 @@ class BuildOrder {
 	BuildOrder(std::vector<Build*> builds_pile);
 
 	bool is_empty();
+
+	void DetermineNextBuilding(Bot *bot);
 	// TODO add function to determine what to build next in function of game observation and current buildings_pile. 
 	// FOR EXAMPLE : if supply_max < 200 and buildings_pile doesn't contain 2 supply_max per barracks + command center : add one.
 };
@@ -95,9 +111,12 @@ class BuildingManager {
 
 	void TryBuilding(Bot *bot);
 
-	void BuildBuilding(Bot *bot, const Build* building_to_build);
+	void BuildBuilding(Bot *bot, const Build* building_to_build, Vector2D target_position);
+	void BuildBuilding(Bot *bot, const Build* building_to_build, const Unit* target_geyser);
 
-	const Unit* GetBuilder(const ObservationInterface *observation);
+	const Unit* FindNearestGeyser(Bot *bot, const Point2D& start);
+
+	const Unit* GetBuilder(const ObservationInterface *observation, const Build* building_to_build);
 
 	// TODO :: Find a better name : InexistantDependencies do not reflect well we are talking about unbuilt + not in construction.
 	// TODO :: Find why we can't have a const Building* as argument for this function (doesn't work for getUnbuiltDependencies call

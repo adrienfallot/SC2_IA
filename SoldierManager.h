@@ -26,6 +26,8 @@ private:
 
 	bool DetermineActionForMarine(Bot* bot, const Unit* marine_idle, bool send_marines);
 
+	Point2D GetRandomPositionInArea(Point2D center, float radius);
+
 public:
 	SoldierManager();
 

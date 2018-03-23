@@ -61,10 +61,20 @@ bool SoldierManager::DetermineActionForMarine(Bot* bot, const Unit* marine_idle,
 	if (enought_marines_for_attack)
 	{
 		const GameInfo& game_info = bot->Observation()->GetGameInfo();
-		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, game_info.enemy_start_locations.front());
+		Point2D target_position = GetRandomPositionInArea(game_info.enemy_start_locations.front(), 1);
+		bot->Actions()->UnitCommand(marine_idle, ABILITY_ID::ATTACK_ATTACK, target_position);
 		number_of_idle_marines_--;
 		std::cout << "BIP" << std::endl;
 		return true;
 	}
 	return false;
+}
+
+Point2D SoldierManager::GetRandomPositionInArea(Point2D center, float radius)
+{
+	Point2D randomPosition = center;
+	randomPosition.x += radius * cos(rand());
+	randomPosition.y += radius * sin(rand());
+
+	return randomPosition;
 }

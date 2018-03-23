@@ -33,7 +33,7 @@ void Bot::OnGameStart() {
 	std::vector<Build*> buildsPile;
 
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 7.5, -7.5)));
-	buildsPile.push_back(new Build(terranArmory, TransformPoint2D(secondCommandCenterPosition, 17.5, -13.5)));
+	buildsPile.push_back(new Build(terranArmory, TransformPoint2D(secondCommandCenterPosition, 17, -14)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 1.5, -10.5)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 3.5, -10.5)));
 	buildsPile.push_back(new Build(terranSupplyDepot, TransformPoint2D(secondCommandCenterPosition, 5.5, -10.5)));

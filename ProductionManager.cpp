@@ -133,11 +133,18 @@ bool ProductionManager::GetIfHasATechLab(Bot *bot, const Unit* barrack_idle) {
 
 bool ProductionManager::DetermineProductionForEngineeringBay(Bot* bot, const Unit* engineeringBay_idle) {
 	const int COST_OF_INFANTERY_WEAPON_1 = 100;
-	const int COST_OF_INFANTERY_WEAPON_2 = 175;
+	const int COST_OF_INFANTERY_WEAPON_2 = 300;
 	const int COST_OF_INFANTERY_WEAPON_3 = 250;
 	const int COST_OF_INFANTERY_ARMOR_1 = 100;
 	const int COST_OF_INFANTERY_ARMOR_2 = 175;
 	const int COST_OF_INFANTERY_ARMOR_3 = 250;
+	Units units_armory = bot->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_ARMORY));
+	bool hasArmory = false;
+	for (const auto& unit : units_armory) {
+		if (unit->unit_type == UNIT_TYPEID::TERRAN_ARMORY) {
+			hasArmory = true;
+		}
+	}
 	const ObservationInterface* observation = bot->Observation();
 
 	if (current_infantery_weapon_level >= 3 && current_infantery_armor_level >= 3) {
@@ -152,14 +159,16 @@ bool ProductionManager::DetermineProductionForEngineeringBay(Bot* bot, const Uni
 				return true;
 			}
 		}
-		else if (current_infantery_weapon_level < 2) {  // TODO :: Add dependency to armurerie
+		else if (current_infantery_weapon_level < 2  && hasArmory) {  // TODO :: Add dependency to armurerie
+			std::cout << "TEST" << std::endl;
 			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_WEAPON_2, COST_OF_INFANTERY_WEAPON_2, 0)) {
+				std::cout << "TEST1" << std::endl;
 				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONSLEVEL2);
 				current_infantery_weapon_level++;
 				return true;
 			}
 		}
-		else if (current_infantery_weapon_level < 3) {
+		else if (current_infantery_weapon_level < 3 && hasArmory) {
 			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_WEAPON_3, COST_OF_INFANTERY_WEAPON_3, 0)) {
 				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONSLEVEL3);
 				current_infantery_weapon_level++;
@@ -175,14 +184,14 @@ bool ProductionManager::DetermineProductionForEngineeringBay(Bot* bot, const Uni
 				return true;
 			}
 		}
-		else if (current_infantery_armor_level < 2) {  // TODO :: Add dependency to armurerie
+		else if (current_infantery_armor_level < 2 && hasArmory) {  // TODO :: Add dependency to armurerie
 			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_ARMOR_2, COST_OF_INFANTERY_ARMOR_2, 0)) {
 				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYARMORLEVEL2);
 				current_infantery_armor_level++;
 				return true;
 			}
 		}
-		else if (current_infantery_armor_level < 3) {
+		else if (current_infantery_armor_level < 3 && hasArmory) {
 			if (UnitCanBeConstructed(observation, COST_OF_INFANTERY_ARMOR_3, COST_OF_INFANTERY_ARMOR_3, 0)) {
 				bot->Actions()->UnitCommand(engineeringBay_idle, ABILITY_ID::RESEARCH_TERRANINFANTRYARMORLEVEL3);
 				current_infantery_armor_level++;
